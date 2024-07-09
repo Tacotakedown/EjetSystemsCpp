@@ -10,8 +10,7 @@
 #include "Renderer/VulkanUtils.h"
 #include "Renderer/Fonts.h"
 
-#include "Systems/E170Systems/E170Systems.hpp"
-#include "Util/DeltaTime/DeltaTime.hpp"
+#include "SystemsMain/SystemsMain.hpp"
 
 using namespace E170Systems::Renderer;
 using namespace std::chrono_literals;
@@ -19,14 +18,6 @@ using namespace std::chrono_literals;
 
 int main(int, const char **) {
 
-    auto initValues =
-            E170Systems::E170SystemInitializer{
-
-            };
-
-    E170Systems::E170Systems systems((const char **) "ConnectorSimconnect",
-                                     initValues);
-    E170Systems::Util::DeltaTime dt;
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -89,16 +80,20 @@ int main(int, const char **) {
     io.Fonts->AddFontDefault();
 #ifdef __linux__
     ImFont *Vera = io.Fonts->AddFontFromFileTTF("/usr/share/fonts/TTF/Vera.ttf", 18.0f);
-    fontManger.AddFont("Vera", Vera);
+    fontManger.AddFont("Default", Vera);
     io.FontDefault = Vera;
-
     IM_ASSERT(Vera != nullptr);
 #else
-    ImFont* Arial =  io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\arial.ttf", 18.0f); // TODO: i dont know if this is an actutal windows font, nor am I going to install windows to find out;
+    ImFont *Arial = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\arial.ttf", 18.0f);
     io.FontDefault = Arial;
+    fontManger.AddFont("Default", Arial);
+    IM_ASSERT(Arial != nullptr);
 #endif
 
     ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.00f);
+
+    std::thread systemThread(SystemMain);
+    systemThread.detach();
 
     while (!glfwWindowShouldClose(window)) {
 
@@ -124,9 +119,6 @@ int main(int, const char **) {
             FrameRender(wd, draw_data);
             FramePresent(wd);
         }
-
-        float deltaTime = dt.getDeltaTime();
-        systems.Update(deltaTime);
 
         std::this_thread::sleep_for(17ms);
     }

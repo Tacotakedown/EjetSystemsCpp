@@ -27,25 +27,34 @@ set(IMGUI_SOURCES
         dependencies/ImGui/backends/imgui_impl_vulkan.cpp
 )
 
-include_directories(${VULKAN_SDK}/include ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glfw/include ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/ImGui)
+include_directories(
+        ${VULKAN_SDK}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glfw/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/ImGui
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Systems
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/Util
+)
 
 if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glfw/CMakeLists.txt")
     message(FATAL_ERROR "The GLFW submodule is missing. Please ensure you have recursively cloned the repository with 'git clone --recursive' or run 'git submodule update --init --recursive'.")
-endif()
+endif ()
 add_subdirectory(dependencies/glfw)
 
 add_executable(EjetSystems ${SRC_FILES}
         src/Systems/E170Systems/E170Systems.cpp
         src/Systems/E170Systems/E170Systems.hpp
-        src/Systems/Hydraulic/Hydraulic.cpp
-        src/Systems/Hydraulic/Hydraulic.hpp
-        src/Systems/Electrical/Electrical.cpp
-        src/Systems/Electrical/Electrical.hpp
         src/Util/DeltaTime/DeltaTime.cpp
         src/Util/DeltaTime/DeltaTime.hpp
         src/Renderer/Fonts.cpp
         src/Renderer/Fonts.h
         src/Renderer/VulkanUtils.h
+        src/Systems/SystemsMain/SystemsMain.hpp
+        src/Systems/System/System.hpp
+        src/Systems/Electrical/Electrical.cpp
+        src/Systems/Electrical/Electrical.hpp
+        src/Systems/Hydraulic/Hydraulic.cpp
+        src/Systems/Hydraulic/Hydraulic.hpp
 )
 
 target_sources(EjetSystems PRIVATE ${IMGUI_SOURCES})

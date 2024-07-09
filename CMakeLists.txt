@@ -4,6 +4,9 @@ project(EjetSystems)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if (NOT DEFINED ENV{VULKAN_SDK})
+    message(FATAL_ERROR "VULKAN_SDK environment variable is not set, please add it to your environment variables! The vulkan SDK can be found in the readme")
+endif ()
 set(VULKAN_SDK $ENV{VULKAN_SDK})
 
 
@@ -24,9 +27,11 @@ set(IMGUI_SOURCES
         dependencies/ImGui/backends/imgui_impl_vulkan.cpp
 )
 
-
 include_directories(${VULKAN_SDK}/include ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glfw/include ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/ImGui)
 
+if (NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glfw/CMakeLists.txt")
+    message(FATAL_ERROR "The GLFW submodule is missing. Please ensure you have recursively cloned the repository with 'git clone --recursive' or run 'git submodule update --init --recursive'.")
+endif()
 add_subdirectory(dependencies/glfw)
 
 add_executable(EjetSystems ${SRC_FILES}
@@ -47,5 +52,8 @@ target_sources(EjetSystems PRIVATE ${IMGUI_SOURCES})
 
 target_include_directories(EjetSystems PRIVATE ${VULKAN_SDK}/include)
 
-target_link_libraries(EjetSystems -L${VULKAN_SDK}/lib -lvulkan glfw)
-
+if (WIN32)
+    target_link_libraries(EjetSystems ${VULKAN_SDK}/Lib/vulkan-1.lib glfw)
+else ()
+    target_link_libraries(EjetSystems -L${VULKAN_SDK}/lib -lvulkan)
+endif ()

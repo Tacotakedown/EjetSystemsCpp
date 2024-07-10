@@ -55,6 +55,7 @@ add_executable(EjetSystems ${SRC_FILES}
         src/Systems/Electrical/Electrical.hpp
         src/Systems/Hydraulic/Hydraulic.cpp
         src/Systems/Hydraulic/Hydraulic.hpp
+        src/Units/Units.hpp
 )
 
 target_sources(EjetSystems PRIVATE ${IMGUI_SOURCES})

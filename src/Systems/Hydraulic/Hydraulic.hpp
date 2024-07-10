@@ -6,12 +6,12 @@
 #define EJETSYSTEMS_HYDRAULIC_HPP
 
 #include "System/System.hpp"
-#include "E170Systems/E170Systems.hpp"
+
 
 class Hydraulic : public System {
 
 public:
-    Hydraulic(E170Systems::E170SystemInitializer &state);
+    Hydraulic(E170SystemInitializer &state);
 
     void Update(float dt) override;
 };

@@ -8,7 +8,7 @@
 #include "E170Systems/E170Systems.hpp"
 
 void SystemMain() {
-    auto initValues = E170Systems::E170SystemInitializer{
+    auto initValues = E170SystemInitializer{
             .altitude = 0.0f,
             .heading=0.0f,
             .pitch=0.0f,

@@ -6,12 +6,11 @@
 #define EJETSYSTEMS_ELECTRICAL_HPP
 
 #include "System/System.hpp"
-#include "E170Systems/E170Systems.hpp"
 
 
 class Electrical : public System {
 public:
-    Electrical(E170Systems::E170SystemInitializer &state);
+    Electrical(E170SystemInitializer &state);
 
     void Update(float dt) override;
 

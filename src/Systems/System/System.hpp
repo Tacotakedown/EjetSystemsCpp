@@ -5,17 +5,25 @@
 #ifndef EJETSYSTEMS_SYSTEM_HPP
 #define EJETSYSTEMS_SYSTEM_HPP
 
-#include "E170Systems/E170Systems.hpp"
+
+struct E170SystemInitializer {
+    float altitude;
+    float heading;
+    float pitch;
+    float bank;
+    float longitude;
+    float latitude;
+};
 
 class System {
 
 public:
-    System(E170Systems::E170SystemInitializer &State) : m_SystemState(State) {}
+    System(E170SystemInitializer &State) : m_SystemState(State) {}
 
     virtual void Update(float dt) = 0;
 
 private:
-    E170Systems::E170SystemInitializer &m_SystemState;
+    E170SystemInitializer &m_SystemState;
 
 };
 

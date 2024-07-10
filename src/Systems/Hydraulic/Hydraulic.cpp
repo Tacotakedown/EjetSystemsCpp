@@ -5,8 +5,8 @@
 #include "Hydraulic.hpp"
 
 
-Hydraulic::Hydraulic(E170Systems::E170SystemInitializer &state) : System(state) {}
+Hydraulic::Hydraulic(E170SystemInitializer &state) : System(state) {}
 
 void Hydraulic::Update(float dt) {
-    
+
 }

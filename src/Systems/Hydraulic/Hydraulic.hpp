@@ -1,20 +1,10 @@
-//
-// Created by Taco on 7/9/2024.
-//
-
-#ifndef EJETSYSTEMS_HYDRAULIC_HPP
-#define EJETSYSTEMS_HYDRAULIC_HPP
+#pragma once
 
 #include "System/System.hpp"
 
-
-class Hydraulic : public System {
-
+class Hydraulic final : public System {
 public:
-    Hydraulic(E170SystemInitializer &state);
+    explicit Hydraulic(E170SystemInitializer &state);
 
     void Update(float dt) override;
 };
-
-
-#endif //EJETSYSTEMS_HYDRAULIC_HPP

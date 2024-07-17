@@ -1,10 +1,4 @@
-//
-// Created by Taco on 7/9/2024.
-//
-
-#ifndef EJETSYSTEMS_SYSTEM_HPP
-#define EJETSYSTEMS_SYSTEM_HPP
-
+#pragma once
 
 struct E170SystemInitializer {
     float altitude;
@@ -13,19 +7,20 @@ struct E170SystemInitializer {
     float bank;
     float longitude;
     float latitude;
+
+    bool abort;
 };
 
 class System {
-
 public:
-    System(E170SystemInitializer &State) : m_SystemState(State) {}
+    explicit System(E170SystemInitializer &State) : m_SystemState(State) {
+    }
 
     virtual void Update(float dt) = 0;
 
+protected:
+    ~System() = default;
+
 private:
     E170SystemInitializer &m_SystemState;
-
 };
-
-
-#endif //EJETSYSTEMS_SYSTEM_HPP

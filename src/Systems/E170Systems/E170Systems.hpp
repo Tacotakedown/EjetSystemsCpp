@@ -1,13 +1,11 @@
-#include <string>
+#pragma once
+
 #include "system/system.hpp"
 
 namespace E170Systems {
-
-
     class E170Systems {
-
     public:
-        E170Systems(E170SystemInitializer init);
+        explicit E170Systems(const E170SystemInitializer &init);
 
         ~E170Systems();
 
@@ -21,5 +19,4 @@ namespace E170Systems {
 
         float m_DeltaTime;
     };
-
 } // namespace E170Systems

@@ -1,14 +1,7 @@
-//
-// Created by taco on 7/7/24.
-//
-
-#ifndef EJETSYSTEMS_VULKANUTILS_H
-#define EJETSYSTEMS_VULKANUTILS_H
-
+#pragma once
 
 #include <cstdio>
 #include <cstdlib>
-#include <utility>
 
 #define GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_VULKAN
@@ -18,13 +11,12 @@
 #include "backends/imgui_impl_vulkan.h"
 
 namespace E170Systems::Renderer {
-
     using namespace E170Systems::Renderer;
     static VkAllocationCallbacks *g_Allocator = nullptr;
     static VkInstance g_Instance = VK_NULL_HANDLE;
     static VkPhysicalDevice g_PhysicalDevice = VK_NULL_HANDLE;
     static VkDevice g_Device = VK_NULL_HANDLE;
-    static uint32_t g_QueueFamily = (uint32_t) -1;
+    static uint32_t g_QueueFamily = static_cast<uint32_t>(-1);
     static VkQueue g_Queue = VK_NULL_HANDLE;
     static VkDebugReportCallbackEXT g_DebugReport = VK_NULL_HANDLE;
     static VkPipelineCache g_PipelineCache = VK_NULL_HANDLE;
@@ -42,7 +34,8 @@ namespace E170Systems::Renderer {
         if (err == 0)
             return;
         fprintf(stderr, "[Vulkan] error: VkResult = %d\n", err);
-        if (err < 0) {}
+        if (err < 0) {
+        }
         abort();
     }
 
@@ -62,7 +55,7 @@ namespace E170Systems::Renderer {
         IM_ASSERT(gpu_count > 0);
 
         ImVector<VkPhysicalDevice> gpus;
-        gpus.resize(gpu_count);
+        gpus.resize(static_cast<int>(gpu_count));
         err = vkEnumeratePhysicalDevices(g_Instance, &gpu_count, gpus.Data);
         check_vk_result(err);
 
@@ -80,16 +73,14 @@ namespace E170Systems::Renderer {
     }
 
     static void SetupVulkan(ImVector<const char *> instance_expressions) {
-        VkResult err;
-
-        {
+        VkResult err; {
             VkInstanceCreateInfo createInfo = {};
             createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 
             uint32_t propertiesCount;
             ImVector<VkExtensionProperties> properties;
             vkEnumerateInstanceExtensionProperties(nullptr, &propertiesCount, nullptr);
-            properties.resize(propertiesCount);
+            properties.resize(static_cast<int>(propertiesCount));
             err = vkEnumerateInstanceExtensionProperties(nullptr, &propertiesCount, properties.Data);
             check_vk_result(err);
 
@@ -105,47 +96,41 @@ namespace E170Systems::Renderer {
 #endif
 
 
-            createInfo.enabledExtensionCount = (uint32_t) instance_expressions.Size;
+            createInfo.enabledExtensionCount = static_cast<uint32_t>(instance_expressions.Size);
             createInfo.ppEnabledExtensionNames = instance_expressions.Data;
             err = vkCreateInstance(&createInfo, g_Allocator, &g_Instance);
             check_vk_result(err);
-
-
         }
-        g_PhysicalDevice = SetupVulkan_SelectPhysicalDevice();
-
-        {
+        g_PhysicalDevice = SetupVulkan_SelectPhysicalDevice(); {
             uint32_t count;
             vkGetPhysicalDeviceQueueFamilyProperties(g_PhysicalDevice, &count, nullptr);
-            VkQueueFamilyProperties *queues = (VkQueueFamilyProperties *) malloc(
-                    sizeof(VkQueueFamilyProperties) * count);
+            auto *queues = static_cast<VkQueueFamilyProperties *>(malloc(
+                sizeof(VkQueueFamilyProperties) * count));
             vkGetPhysicalDeviceQueueFamilyProperties(g_PhysicalDevice, &count, queues);
 
             for (uint32_t i = 0; i < count; ++i) {
-                if (queues[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {}
+                if (queues[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+                }
                 g_QueueFamily = i;
                 break;
             }
             free(queues);
-            IM_ASSERT(g_QueueFamily != (uint32_t) -1);
-
-        }
-
-        {
+            IM_ASSERT(g_QueueFamily != static_cast<uint32_t>(-1));
+        } {
             ImVector<const char *> device_extensions;
             device_extensions.push_back("VK_KHR_swapchain");
 
             uint32_t properties_count;
             ImVector<VkExtensionProperties> properties;
             vkEnumerateDeviceExtensionProperties(g_PhysicalDevice, nullptr, &properties_count, nullptr);
-            properties.resize(properties_count);
+            properties.resize(static_cast<int>(properties_count));
             vkEnumerateDeviceExtensionProperties(g_PhysicalDevice, nullptr, &properties_count, properties.Data);
 
 #ifdef VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME
             if(IsExtensionAvailable(properties, VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME))
                 device_extensions.push_back(VK_KHR_PORTABILITY_SUBSET_EXTENSION_NAME);
 #endif
-            const float queue_priority[] = {1.0f};
+            constexpr float queue_priority[] = {1.0f};
             VkDeviceQueueCreateInfo queue_info[1] = {};
             queue_info[0].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
             queue_info[0].queueFamilyIndex = g_QueueFamily;
@@ -153,25 +138,23 @@ namespace E170Systems::Renderer {
             queue_info[0].pQueuePriorities = queue_priority;
             VkDeviceCreateInfo create_info = {};
             create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-            create_info.queueCreateInfoCount = sizeof(queue_info) / sizeof(queue_info[0]);
+            create_info.queueCreateInfoCount = std::size(queue_info);
             create_info.pQueueCreateInfos = queue_info;
-            create_info.enabledExtensionCount = (uint32_t) device_extensions.Size;
+            create_info.enabledExtensionCount = static_cast<uint32_t>(device_extensions.Size);
             create_info.ppEnabledExtensionNames = device_extensions.Data;
             err = vkCreateDevice(g_PhysicalDevice, &create_info, g_Allocator, &g_Device);
             check_vk_result(err);
             vkGetDeviceQueue(g_Device, g_QueueFamily, 0, &g_Queue);
-        }
-
-        {
+        } {
             VkDescriptorPoolSize pool_sizes[] =
-                    {
-                            {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1},
-                    };
+            {
+                {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1},
+            };
             VkDescriptorPoolCreateInfo pool_info = {};
             pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
             pool_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
             pool_info.maxSets = 1;
-            pool_info.poolSizeCount = (uint32_t) IM_ARRAYSIZE(pool_sizes);
+            pool_info.poolSizeCount = static_cast<uint32_t>(IM_ARRAYSIZE(pool_sizes));
             pool_info.pPoolSizes = pool_sizes;
             err = vkCreateDescriptorPool(g_Device, &pool_info, g_Allocator, &g_DescriptorPool);
             check_vk_result(err);
@@ -188,9 +171,11 @@ namespace E170Systems::Renderer {
             exit(-1);
         }
 
-        const VkFormat requestSurfaceImageFormat[] = {VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_R8G8B8A8_UNORM,
-                                                      VK_FORMAT_B8G8R8_UNORM, VK_FORMAT_R8G8B8_UNORM};
-        const VkColorSpaceKHR requestSurfaceColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
+        constexpr VkFormat requestSurfaceImageFormat[] = {
+            VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_R8G8B8A8_UNORM,
+            VK_FORMAT_B8G8R8_UNORM, VK_FORMAT_R8G8B8_UNORM
+        };
+        constexpr VkColorSpaceKHR requestSurfaceColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
         wd->SurfaceFormat = ImGui_ImplVulkanH_SelectSurfaceFormat(g_PhysicalDevice, wd->Surface,
                                                                   requestSurfaceImageFormat,
                                                                   (size_t) IM_ARRAYSIZE(requestSurfaceImageFormat),
@@ -207,7 +192,6 @@ namespace E170Systems::Renderer {
         IM_ASSERT(g_MinImageCount >= 2);
         ImGui_ImplVulkanH_CreateOrResizeWindow(g_Instance, g_PhysicalDevice, g_Device, wd, g_QueueFamily, g_Allocator,
                                                width, height, g_MinImageCount);
-
     }
 
     static void CleanupVulkan() {
@@ -221,28 +205,25 @@ namespace E170Systems::Renderer {
     }
 
     static void FrameRender(ImGui_ImplVulkanH_Window *wd, ImDrawData *draw_data) {
-        VkResult err;
-
         VkSemaphore image_acquired_semaphore = wd->FrameSemaphores[wd->SemaphoreIndex].ImageAcquiredSemaphore;
         VkSemaphore render_complete_semaphore = wd->FrameSemaphores[wd->SemaphoreIndex].RenderCompleteSemaphore;
-        err = vkAcquireNextImageKHR(g_Device, wd->Swapchain, UINT64_MAX, image_acquired_semaphore, VK_NULL_HANDLE,
-                                    &wd->FrameIndex);
+        VkResult err = vkAcquireNextImageKHR(g_Device, wd->Swapchain, UINT64_MAX, image_acquired_semaphore,
+                                             VK_NULL_HANDLE,
+                                             &wd->FrameIndex);
         if (err == VK_ERROR_OUT_OF_DATE_KHR || err == VK_SUBOPTIMAL_KHR) {
             g_SwapChainRebuild = true;
             return;
         }
         check_vk_result(err);
 
-        ImGui_ImplVulkanH_Frame *fd = &wd->Frames[wd->FrameIndex];
-        {
+        ImGui_ImplVulkanH_Frame *fd = &wd->Frames[wd->FrameIndex]; {
             err = vkWaitForFences(g_Device, 1, &fd->Fence, VK_TRUE,
-                                  UINT64_MAX);    // wait indefinitely instead of periodically checking
+                                  UINT64_MAX); // wait indefinitely instead of periodically checking
             check_vk_result(err);
 
             err = vkResetFences(g_Device, 1, &fd->Fence);
             check_vk_result(err);
-        }
-        {
+        } {
             err = vkResetCommandPool(g_Device, fd->CommandPool, 0);
             check_vk_result(err);
             VkCommandBufferBeginInfo info = {};
@@ -250,8 +231,7 @@ namespace E170Systems::Renderer {
             info.flags |= VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
             err = vkBeginCommandBuffer(fd->CommandBuffer, &info);
             check_vk_result(err);
-        }
-        {
+        } {
             VkRenderPassBeginInfo info = {};
             info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
             info.renderPass = wd->RenderPass;
@@ -265,8 +245,7 @@ namespace E170Systems::Renderer {
 
         ImGui_ImplVulkan_RenderDrawData(draw_data, fd->CommandBuffer);
 
-        vkCmdEndRenderPass(fd->CommandBuffer);
-        {
+        vkCmdEndRenderPass(fd->CommandBuffer); {
             VkPipelineStageFlags wait_stage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
             VkSubmitInfo info = {};
             info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -386,8 +365,4 @@ namespace E170Systems::Renderer {
         glfwDestroyWindow(window);
         glfwTerminate();
     }
-
 }
-
-
-#endif //EJETSYSTEMS_VULKANUTILS_H

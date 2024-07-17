@@ -1,5 +1,4 @@
 #include <chrono>
-#include <iostream>
 #include <thread>
 #include <cstdio>
 
@@ -17,8 +16,6 @@ using namespace std::chrono_literals;
 
 
 int main(int, const char **) {
-
-
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return 1;
@@ -84,7 +81,7 @@ int main(int, const char **) {
     io.FontDefault = Vera;
     IM_ASSERT(Vera != nullptr);
 #else
-    ImFont *Arial = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\arial.ttf", 18.0f);
+    ImFont *Arial = io.Fonts->AddFontFromFileTTF(R"(C:\Windows\Fonts\arial.ttf)", 18.0f);
     io.FontDefault = Arial;
     fontManger.AddFont("Default", Arial);
     IM_ASSERT(Arial != nullptr);
@@ -96,12 +93,9 @@ int main(int, const char **) {
     systemThread.detach();
 
     while (!glfwWindowShouldClose(window)) {
-
         glfwPollEvents();
         InitFrameBuffer(window);
-        NewImGuiFrame();
-
-        {
+        NewImGuiFrame(); {
             ImGui::Begin("Hello, world!");
             ImGui::Text("This is some useful text.");
 

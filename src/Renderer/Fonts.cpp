@@ -6,23 +6,22 @@
 
 
 namespace E170Systems::Renderer {
+    std::unordered_map<std::string, ImFont *> FontManager::s_Fonts;
 
-    std::unordered_map<std::string, ImFont *> FontManager::m_fonts;
-
-
-    void FontManager::AddFont(std::string name, ImFont *font) {
-        m_fonts[name] = font;
+    void FontManager::AddFont(const std::string &name, ImFont *font) {
+        s_Fonts[name] = font;
+        // static is only there to call out of scope, we will just sync the static to the member var
+        m_Fonts[name] = font;
     }
 
-    ImFont *FontManager::GetFont(std::string name) {
-        auto it = m_fonts.find(name);
-        return (it != m_fonts.end()) ? it->second : nullptr;
+    ImFont *FontManager::GetFont(const std::string &name) {
+        // this function doesnt need to exist but we are going to keep it tto ensure that we are not calling an empty hashmap in the scope
+        const auto it = m_Fonts.find(name);
+        return (it != m_Fonts.end()) ? it->second : nullptr;
     }
 
-    ImFont *FontManager::GetFontOutOfScope(std::string name) {
-        auto it = m_fonts.find(name);
-        return (it != m_fonts.end()) ? it->second : nullptr;
+    ImFont *FontManager::GetFontOutOfScope(const std::string &name) {
+        const auto it = s_Fonts.find(name);
+        return (it != s_Fonts.end()) ? it->second : nullptr;
     }
-
-
 }

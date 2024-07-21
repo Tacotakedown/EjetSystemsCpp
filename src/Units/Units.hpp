@@ -1,4 +1,3 @@
-#pragma once
 
 namespace E170Systems::Units {
     namespace Length {
@@ -174,6 +173,14 @@ namespace E170Systems::Units {
         typedef float Radian;
         typedef float Degree;
         typedef float Gradian;
+    }
+
+    namespace FlowRate {
+        typedef float LiterPerMinute;
+    }
+
+    namespace Viscosity {
+        typedef float NewtonSecondPerSquareMeter;
     }
 }
 

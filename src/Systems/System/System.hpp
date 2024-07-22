@@ -13,14 +13,12 @@ struct E170SystemInitializer {
 
 class System {
 public:
-    explicit System(E170SystemInitializer &State) : m_SystemState(State) {
-    }
+    System() = default;
 
     virtual void Update(float dt) = 0;
 
 protected:
     ~System() = default;
 
-private:
-    E170SystemInitializer &m_SystemState;
+
 };

@@ -11,7 +11,7 @@ using namespace std::chrono_literals;
 
 namespace E170Systems {
     E170Systems::E170Systems(const E170SystemInitializer &init)
-        : m_InitData(init), m_DeltaTime(0.0f) {
+            : m_InitData(init), m_DeltaTime(0.0f) {
     }
 
     E170Systems::~E170Systems() = default;

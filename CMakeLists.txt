@@ -4,9 +4,12 @@ project(EjetSystems VERSION 0.1 LANGUAGES CXX C)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-if (NOT DEFINED ENV{VULKAN_SDK})
+if (DEFINED ENV{VULKAN_SDK})
+    message(STATUS "VULKAN_SDK is set to: $ENV{VULKAN_SDK}")
+else ()
     message(FATAL_ERROR "VULKAN_SDK environment variable is not set, please add it to your environment variables! The vulkan SDK can be found in the readme")
 endif ()
+
 set(VULKAN_SDK $ENV{VULKAN_SDK})
 
 
@@ -73,6 +76,7 @@ add_executable(EjetSystems ${SRC_FILES}
         src/Systems/Hydraulic/Components/Reservoir.cpp
         src/Systems/Hydraulic/Components/Reservoir.hpp
         src/Systems/Hydraulic/Components/HydraulicComponents.hpp
+        src/Systems/Shared/SystemStruct.hpp
 )
 
 target_sources(EjetSystems PRIVATE ${IMGUI_SOURCES})
@@ -82,5 +86,5 @@ target_include_directories(EjetSystems PRIVATE ${VULKAN_SDK}/include)
 if (WIN32)
     target_link_libraries(EjetSystems ${VULKAN_SDK}/Lib/vulkan-1.lib glfw)
 else ()
-    target_link_libraries(EjetSystems -L${VULKAN_SDK}/lib -lvulkan)
+    target_link_libraries(EjetSystems -L${VULKAN_SDK}/lib -lvulkan glfw)
 endif ()

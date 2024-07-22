@@ -1,6 +1,6 @@
 #pragma once
 
-#include "system/system.hpp"
+#include "System/System.hpp"
 
 namespace E170Systems {
     class E170Systems {

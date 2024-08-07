@@ -6,12 +6,13 @@
 #include "Electrical/Electrical.hpp"
 #include "Hydraulic/Hydraulic.hpp"
 #include "DeltaTime/DeltaTime.hpp"
+#include "Shared/SystemStruct.hpp"
 
 using namespace std::chrono_literals;
 
 namespace E170Systems {
     E170Systems::E170Systems(const E170SystemInitializer &init)
-            : m_InitData(init), m_DeltaTime(0.0f) {
+        : m_InitData(init), m_DeltaTime(0.0f) {
     }
 
     E170Systems::~E170Systems() = default;
@@ -22,7 +23,19 @@ namespace E170Systems {
     }
 
     void E170Systems::Run() {
-        auto *hydraulic = new Hydraulic(m_InitData);
+        auto HydraulicState = Variables::Hydraulic::HydraulicVars{
+            .System1 = Variables::Hydraulic::System1Vars{
+                .ReservoirLevel = 0.0f,
+                .EngineDrivenPumpRPM = 0.0f,
+                .AcMotorPumpState = false,
+                .PreManifoldPressure = 0.0f,
+                .PostManifoldPressure = 0.0f,
+                .LhThrustReverserPosition = 0.0f
+            }
+        };
+
+
+        auto *hydraulic = new HydraulicSystem(HydraulicState);
         auto *electrical = new Electrical(m_InitData);
 
         Util::DeltaTime deltaTime;

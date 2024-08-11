@@ -77,6 +77,10 @@ add_executable(EjetSystems ${SRC_FILES}
         src/Systems/Hydraulic/Components/Reservoir.hpp
         src/Systems/Hydraulic/Components/HydraulicComponents.hpp
         src/Systems/Shared/SystemStruct.hpp
+        src/Systems/Electrical/Components/ElectricalComponent.cpp
+        src/Systems/Electrical/Components/ElectricalComponent.hpp
+        src/Systems/Electrical/Components/Wire.cpp
+        src/Systems/Electrical/Components/Wire.hpp
 )
 
 target_sources(EjetSystems PRIVATE ${IMGUI_SOURCES})

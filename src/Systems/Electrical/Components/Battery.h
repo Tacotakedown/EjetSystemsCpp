@@ -4,19 +4,20 @@
 #include "Units.hpp"
 
 
-namespace Electrical::Component::Battery {
-
+namespace Electrical::Component {
     using namespace E170Systems::Units::Voltage;
     using namespace E170Systems::Units::ElectricStorage;
     using namespace E170Systems::Units::ElectricCurrent;
 
     class Battery {
-
     public:
         Battery(std::string name, Volt voltage, std::pair<Volt, Volt> voltage_min_max, MilliampHours capacity,
                 std::pair<Ampere, Ampere> max_charge_discharge_rate);
+
         void UpdateState(float DeltaTime);
+
         void SetChargeDischargeRate(float rate);
+
         [[nodiscard]] float GetStateOfCharge() const { return m_StateOfCharge; }
         [[nodiscard]] float GetEfficiency() const { return m_Efficiency; }
         [[nodiscard]] float GetHealth() const { return m_Health; }

@@ -81,6 +81,13 @@ add_executable(EjetSystems ${SRC_FILES}
         src/Systems/Electrical/Components/ElectricalComponent.hpp
         src/Systems/Electrical/Components/Wire.cpp
         src/Systems/Electrical/Components/Wire.hpp
+        src/Systems/Electrical/Busses/Busses.hpp
+        src/Systems/Electrical/Components/GenericDcComponent.cpp
+        src/Systems/Electrical/Components/GenericDcComponent.hpp
+        src/Systems/Electrical/Components/GenericAcComponent.cpp
+        src/Systems/Electrical/Components/GenericAcComponent.hpp
+        src/Systems/Electrical/Components/CircuitBreaker.cpp
+        src/Systems/Electrical/Components/CircuitBreaker.hpp
 )
 
 target_sources(EjetSystems PRIVATE ${IMGUI_SOURCES})

@@ -4,7 +4,7 @@
 #include "ElectricalComponent.hpp"
 #include "tuple"
 
-namespace Electrical::Component::Wire {
+namespace Electrical::Component {
     class Wire final : public ElectricalComponent {
         explicit Wire(E170Systems::Units::Resistance::Ohm resistance);
 

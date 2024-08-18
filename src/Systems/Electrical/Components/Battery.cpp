@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace Electrical::Component::Battery {
+namespace Electrical::Component {
     Battery::Battery(std::string name, Volt voltage,
                      std::pair<Volt, Volt> voltage_min_max, MilliampHours capacity,
                      std::pair<Ampere, Ampere> max_charge_discharge_rate)
